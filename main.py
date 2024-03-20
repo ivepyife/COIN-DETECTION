@@ -1,21 +1,24 @@
+#Import all the library
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-image   = cv2.imread('assets/koin5.jpg')                                                                
-resized = cv2.resize(image, (0, 0), fx=0.5, fy=0.5, interpolation=cv2.INTER_LINEAR)              
-gray    = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)                                              
-blur    = cv2.GaussianBlur(gray, (11, 11), 0)                                                     
-canny   = cv2.Canny(blur, 30, 150)                                                               
-dilated = cv2.dilate(canny, (1,1), iterations=2)                                                 
 
+image   = cv2.imread('assets/koin5.jpg') #import image                                                                
+resized = cv2.resize(image, (0, 0), fx=0.5, fy=0.5, interpolation=cv2.INTER_LINEAR) #halving the image size and use interpolation technique              
+gray    = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY) #transform image to grayscale                                             
+blur    = cv2.GaussianBlur(gray, (11, 11), 0) #blur the image using GaussianBlur technique                                                    
+canny   = cv2.Canny(blur, 30, 150) #using canny technique                                                              
+dilated = cv2.dilate(canny, (1,1), iterations=2) #dilated the image                                                
+
+#finding the contour value
 (cnt, _) = cv2.findContours(                                                                     
     dilated.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
-circles = []
+circles = [] #container for result
 for contour in cnt:
-    area = cv2.contourArea(contour)
-    perimeter = cv2.arcLength(contour, True)
+    area = cv2.contourArea(contour) #get area
+    perimeter = cv2.arcLength(contour, True) #get perimeter
     circularity = 4 * np.pi * area / (perimeter * perimeter) #circularity formula
     if circularity > 0.8:
         circles.append(contour)
